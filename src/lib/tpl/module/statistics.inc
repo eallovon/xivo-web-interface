@@ -782,8 +782,8 @@ class dwho_tpl_statistics extends dwho_tpl_module
 				switch ($axetype)
 				{
 					case 'week':
-						$time = strtotime($infocal['dweek']);
-						$date = dwho_date::get_day_from_week_by_name_day(date('Y',$time),date('W',$time),$coldata['name']);
+                        $time = strtotime($infocal['dweek']);
+                        $date = dwho_date::get_day_from_week_by_name_day($time,$coldata['name']);
 						$return .= $url->href_html($this->bbf($coldata['name'].'-opt', array(date('d',strtotime($date)))),
 								$this->_baseurl,array_merge($qry,
 										array(    'axetype' => 'day',

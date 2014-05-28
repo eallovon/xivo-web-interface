@@ -219,13 +219,26 @@ abstract class dwho_date
 	}
 
 	public static function get_week_range($date)
-	{
-		$date = self::all_to_unixtime($date);
-		$week = date('W',$date);
-		$year = date('Y',$date);
-		$rs = array();
-		$rs['beg'] = strtotime("{$year}-W{$week}-1");
-		$rs['end'] = strtotime("{$year}-W{$week}-7");
+    {
+        $date = self::all_to_unixtime($date);
+        $year = (int)date('Y', $date);
+        $month = (int)date('m', $date);
+        $day = (int)date('d', $date) - $delta;
+
+        $dayofweek = date('N', $date);
+        $delta = (int)$dayofweek - 1;
+
+
+
+        $token = "${year}-${month}-${day} midnight";
+        echo "token $token";
+        $monday = strtotime("${year}-${month}-${day} midnight");
+        $sunday = strtotime("+6 days", $monday);
+
+
+        $rs['beg'] = $monday;
+        $rs['end'] = $sunday;
+        print_r($rs);
 		return($rs);
 	}
 
@@ -375,18 +388,21 @@ abstract class dwho_date
 		return($rs);
 	}
 
-	public static function get_day_from_week_by_name_day($year,$week,$nameday)
-	{
-		$from = strtotime("{$year}-W{$week}-1");
-		$to = strtotime("{$year}-W{$week}-7");
+	public static function get_day_from_week_by_name_day($timestamp,$dayname)
+    {
+        $range = get_week_range($timestamp);
+        echo "HERE";
+        for($current = $range['beg'];
+            $current = strtotime("+1 day", $current);
+            $current <= $range['end'])
+        {
+            echo " $current";
+            if(date('l', $current) == strtolower($dayname)) {
+                return $current;
+            }
+        }
 
-		$rs = array();
-		for ($i=$from;$i<=$to;$i=strtotime('+1day',$i))
-		{
-			if (date('l',$i) === ucfirst($nameday))
-				return(date('Y-m-d',$i));
-		}
-		return(null);
+        return false;
 	}
 }
 
