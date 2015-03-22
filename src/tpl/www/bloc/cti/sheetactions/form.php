@@ -137,7 +137,7 @@ $informations = $this->get_var('informations');
 				'key' => false,
 				'label' => false,
 				'selected' => $v[1]),
-			array("title", "text","url","urlx", "picture", "phone", "form"));
+			array("title", "text","url","urlx", "phone", "form"));
 	 ?>
 				</td>
 				<td>
@@ -216,7 +216,7 @@ $informations = $this->get_var('informations');
 				'label' => false,
 				'empty' => true,
 				'key' => false),
-			array("title", "text","url","urlx", "picture", "phone", "form"));
+			array("title", "text","url","urlx", "phone", "form"));
 
 	 ?>
 				</td>

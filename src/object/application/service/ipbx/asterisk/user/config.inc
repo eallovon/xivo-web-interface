@@ -20,10 +20,6 @@
 
 $array = array();
 
-$array['picture'] = array();
-$array['picture']['file'] = array();
-$array['picture']['file']['mime'] = array('image/jpeg','image/png');
-
 $array['import'] = array();
 $array['import']['file'] = array();
 $array['import']['file']['mime'] = array('text/plain','text/csv');

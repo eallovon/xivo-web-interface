@@ -56,20 +56,6 @@ if(dwho_issa('linefeatures',$info) === true
 
 <div id="sb-part-first" class="b-nodisplay">
 
-<div id="box-userfeatures_picture" class="box_userfeatures_picture">
-
-<?php
-
-if (isset($info['picture']) === true
-&& is_array($info['picture']) === true
-&& isset($info['picture']['id']) === true):
-	echo $url->img_attachement($info['picture']['id'],$info['picture']['name']);
-endif;
-
-?>
-
-</div>
-
 <?php
 	echo	$form->text(array('desc'	=> $this->bbf('fm_userfeatures_firstname'),
 				  'name'	=> 'userfeatures[firstname]',
@@ -88,11 +74,6 @@ endif;
 				  'value'	=> $info['userfeatures']['lastname'],
 				  'error'	=> $this->bbf_args('error',
 						   $this->get_var('error', 'userfeatures', 'lastname')) )),
-
-		$form->file(array('desc'	=> $this->bbf('fm_userfeatures_picture'),
-						  'name'	=> 'picture',
-						  'id'		=> 'picture',
-						  'size'	=> 15)),
 
 		$form->text(array('desc'	=> $this->bbf('fm_userfeatures_mobilephonenumber'),
 				  'name'	=> 'userfeatures[mobilephonenumber]',

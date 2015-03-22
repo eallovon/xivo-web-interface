@@ -50,7 +50,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 	protected $_param			= array();
 	protected $_destination		= null;
 	protected $_schedule_path 	= false;
-	protected $_attachment 		= false;
 	protected $_func_key_manager	= false;
 	protected $_callfilter = false;
 	protected $_callfiltermember = false;
@@ -94,7 +93,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 			die();
 
 		$this->_conf['import']['file']['size'] = $size;
-		$this->_conf['picture']['file']['size'] = $size;
 
 		// init random generator
 		mt_srand(time()+mt_rand());
@@ -123,7 +121,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 		|| ($this->_line = $this->_service->get_application('line')) === false
 		|| ($this->_schedule_path = &$this->_service->get_module('schedule_path')) === false
 		|| ($this->_linefeatures = $this->_service->get_module('linefeatures')) === false
-		|| ($this->_attachment = $this->_service->get_module('attachment')) === false
 		|| ($this->_user_line = $this->_service->get_module('user_line')) === false
 		|| ($_XOBJ = &dwho_gct::get('xivo_object')) === false
 		|| ($this->_appentity = &$_XOBJ->get_application('entity')) === false
@@ -163,9 +160,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 
 		if(dwho_ak('entity',$nocomponents,true) === false)
 			$this->_get_entity();
-
-		if(dwho_ak('picture',$nocomponents,true) === false)
-			$this->_get_picture();
 
 		if(dwho_ak('user_line',$nocomponents,true) === false)
 			$this->_get_user_line();
@@ -246,23 +240,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 			$this->_origin['exten'] = $this->_extensions->get_origin();
 
 		return($this->_info['exten']);
-	}
-
-	function _get_picture()
-	{
-		$this->_info['picture'] = false;
-		$this->_origin['picture'] = false;
-
-		$pictureid = (int) $this->_info['userfeatures']['pictureid'];
-
-		if(is_object($this->_attachment) === false
-		|| $pictureid === 0)
-			return(false);
-
-		$this->_info['picture'] = $this->_attachment->get($this->_info['userfeatures']['pictureid']);
-		$this->_origin['picture'] = $this->_attachment->get_origin();
-
-		return($this->_info['picture']);
 	}
 
 	function _get_entity()
@@ -420,11 +397,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 	function get_config_import_file()
 	{
 		return($this->_chk_exists_cfg('import','file',true));
-	}
-
-	function get_config_picture_file()
-	{
-		return($this->_chk_exists_cfg('picture','file',true));
 	}
 
 	function _get_config_file_maxsize()
@@ -756,7 +728,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 		$arr['userfeatures']['callerid'] = $this->_service->mk_callerid($arr['userfeatures']['callerid']);
 
 		$this->set_userfeatures($action,$arr['userfeatures']);
-		$this->set_picture();
 
 		$vmaction = $action;
 
@@ -975,32 +946,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 			$rs['agentid'] = null;
 
 		$this->_set_result('userfeatures',$rs);
-
-		return(true);
-	}
-
-	function set_picture()
-	{
-		if($this->_attachment === false
-		|| ($userfeatures = $this->get_result('userfeatures')) === null)
-			return(false);
-
-		if(($http_response = dwho_http::factory('response')) === false
-		|| ($fileinfo = $http_response->upload_file('picture',$this->_conf['picture']['file'])) === false)
-			return(false);
-
-		$fileinfo['object_type'] = 'user';
-		$fileinfo['object_id'] = 0;
-		$fileinfo['file'] = $fileinfo['tmp_name'];
-
-		if($fileinfo['error'] > 0
-		|| ($rs = $this->_attachment->chk_values($fileinfo)) === false)
-		{
-			$this->_set_result('picture',$this->_attachment->get_filter_result());
-			$this->_set_error('picture',$this->_attachment->get_filter_error());
-			return(false);
-		}
-		$this->_set_result('picture',$rs);
 
 		return(true);
 	}
@@ -1272,19 +1217,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 		return(true);
 	}
 
-	function update_pictureid($pictureid,$user_id)
-	{
-		if(($pictureid = dwho_ulongint($pictureid)) === 0
-		|| ($user_id = dwho_ulongint($user_id)) === 0
-		|| ($userfeatures = &$this->_service->get_module('userfeatures')) === false)
-			return(false);
-
-		$val = array();
-		$val['pictureid'] = $pictureid;
-
-		return($userfeatures->edit($user_id,$val));
-	}
-
 	function add()
 	{
 		$r = true;
@@ -1298,7 +1230,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 		|| ($user_id = $this->add_userfeatures()) === false
 		|| $this->add_func_key_dest_user($user_id) === false
 		|| ($line = $this->edit_linefeatures($user_id)) === false
-		|| $this->add_picture($user_id) === false
 		|| $this->add_phonefunckey($user_id) === false
 		|| $this->add_rightcall($user_id) === false
 		|| $this->add_dialaction($user_id) === false
@@ -1412,20 +1343,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 			}
 		}
 		return(true);
-	}
-
-	function add_picture($user_id)
-	{
-		if(($rs = $this->get_result('picture')) === null)
-			return($rs);
-		elseif($rs === false)
-			return(false);
-
-		$rs['object_id'] = (int) $user_id;
-
-		$this->_return['picture'] = $this->_attachment->add($rs);
-
-		return($this->_return['picture']);
 	}
 
 	function add_voicemail($user_id)
@@ -1801,7 +1718,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 		|| empty($this->_info) === true
 		|| $this->get_errnb() > 0
 		|| $this->edit_userfeatures() === false
-		|| $this->edit_picture() === false
 		|| $this->edit_phonefunckey() === false
 		|| $this->edit_rightcall() === false
 		|| $this->edit_dialaction() === false
@@ -1878,28 +1794,6 @@ class xivo_application_service_asterisk_user extends xivo_application_asterisk_a
 		$return = $this->_userfeatures->edit($this->_info['userfeatures']['id'],$rs);
 
 		return(($this->_return['userfeatures'] = $return));
-	}
-
-	function edit_picture()
-	{
-		if(($rs = $this->get_result('picture')) === null)
-			return($rs);
-		elseif($this->_attachment === false
-		|| $rs === false)
-			return(false);
-
-		if(dwho_issa('picture',$this->_info) === false)
-		{
-			$return = $this->_attachment->add($rs);
-			$this->update_pictureid($return,$this->_info['userfeatures']['id']);
-		}
-		else
-		{
-			$return = $this->_attachment->edit($this->_info['picture']['id'],$rs);
-			$this->update_pictureid($this->_info['picture']['id'],$this->_info['userfeatures']['id']);
-		}
-
-		return(($this->_return['picture'] = $return));
 	}
 
 	function edit_user_line($user_id, $linefeaturesid)

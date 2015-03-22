@@ -252,7 +252,7 @@ $array['filter']['mailbox'] = array('minlen' => 1,'maxlen' => 40,'regexp' => '/^
 $array['filter']['password'] = array('set' => false,'chk' => 2,'regexp' => '/^[0-9#\*]+$/','maxlen' => 80);
 $array['filter']['fullname'] = array('cast' => 'sgraph','maxlen' => 80);
 $array['filter']['email'] = array('set' => false,'chk' => 2,'maxlen' => 80,'callback' => 'dwho_network::valid_email');
-$array['filter']['pager'] = array('set' => false,'chk' => 2,'regexp' => '/^[0-9#\*]+$/','maxlen' => 80);
+$array['filter']['pager'] = array('set' => false,'chk' => 2,'maxlen' => 80,'callback' => 'dwho_network::valid_email');
 $array['filter']['dialout'] = array('set' => false,
 				    'chk' => 2,
 				    'callback' => 'xivo_service_asterisk::chk_context',
