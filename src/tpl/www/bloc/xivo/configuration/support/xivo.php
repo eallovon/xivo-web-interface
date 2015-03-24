@@ -36,28 +36,42 @@ $element = $this->get_var('element');
 <div class="sb-content">
 <form action="#" method="post" accept-charset="utf-8">
 
-<div id="sb-part-first">
 <?php
-	echo	$form->hidden(array('name'	=> DWHO_SESS_NAME,
-				    'value'	=> DWHO_SESS_ID)),
-
-		$form->hidden(array('name'	=> 'fm_send',
-				    'value'	=> 1)),
-
-		$form->checkbox(array('desc'		=> $this->bbf('fm_maintenance'),
-				      'name'		=> 'maintenance',
-				      'labelid'		=> 'maintenance',
-				      'checked'		=> $info['maintenance'],
-				      'help'        => $this->bbf('fm_help-maintenance')));
+	echo	$form->hidden(array('name' => DWHO_SESS_NAME, 'value' => DWHO_SESS_ID)),
+			$form->hidden(array('name' => 'fm_send', 'value' => 1)),
+			$form->text(array('desc' => $this->bbf('fm_xivo_uuid'), 'value' => $info['uuid'], 'size' => 50));
+?>
+	<div class="fm-paragraph fm-description">
+		<p>
+			<label id="lb-description" for="it-description"><?=$this->bbf('fm_support_key');?></label>
+		</p>
+<?php
+	echo	$form->textarea(array('paragraph'	=> false,
+					'label'	=> false,
+					'name'		=> 'support_key',
+					'id'		=> 'it-support_key',
+					'cols'		=> 60,
+					'rows'		=> 2),
+					$info['support_key']);
+?>
+	</div>
+<div class="sb-list" style="width: 350px; margin: auto;">
+<table>
+	<thead>
+	<tr class="sb-top">
+		<th class="th-single"><?=$this->bbf('col-expiration_date');?></th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr class="fm-paragraph">
+		<td class="td-single"><?=(!isset($info['support_expiration_date'])) ? '-' : $info['support_expiration_date']?></td>
+	</tr>
+	</tbody>
+</table>
+<?php
+echo $form->submit(array('name' => 'submit', 'id' => 'it-submit', 'value' => $this->bbf('fm_bt-save')));
 ?>
 </div>
-<?php
-
-echo	$form->submit(array('name'	=> 'submit',
-			    'id'	=> 'it-submit',
-			    'value'	=> $this->bbf('fm_bt-save')));
-
-?>
 </form>
 	</div>
 	<div class="sb-foot xspan">

@@ -33,7 +33,7 @@ $dhtml->load_js('foot');
 				   array(2006,dwho_i18n::strftime_l('%Y',null),
 				   '<a href="http://'.XIVO_CORP_URL.'" title="'.XIVO_CORP_LABEL.'" target="_blank">'.XIVO_CORP_LABEL.'</a>'));
 ?>
+		 - <?=XIVO_SUPPORT_STATE?>
 		</h6>
-		<span id="page_loaded"></span>
 	</body>
 </html>

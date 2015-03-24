@@ -47,6 +47,14 @@ $_MGR = &dwho_gct::get('xivo_manager');
 $_SRE = dwho_gct::get('xivo_service');
 $_USR = dwho_gct::get('_USR');
 
+$_RAPI_INFOS = &$_RAPI->get_ressource('info');
+$_XIVO_INFOS = $_RAPI_INFOS->simple_get();
+if ($_XIVO_INFOS['is_supported'])
+	define('XIVO_SUPPORT_STATE','Supported Version');
+else
+	define('XIVO_SUPPORT_STATE','Unsupported Version');
+
+
 if(defined('XIVO_TPL_AREA') === false)
 	define('XIVO_TPL_AREA','www');
 

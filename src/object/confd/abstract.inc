@@ -47,6 +47,20 @@ abstract class xivo_confd_helpers_abstract extends xivo_confd_ressource_abstract
 		return($decoded);
 	}
 
+	public function simple_get()
+	{
+		$rs = $this->request_get($this->_build_uri());
+
+		if($this->_status_code !== 200
+		|| empty($rs) === true)
+		{
+			$this->_build_error_message($rs);
+			return(false);
+		}
+
+		return($rs);
+	}
+
 	public function get($id)
 	{
 		if(dwho_has_len($id) === false)
