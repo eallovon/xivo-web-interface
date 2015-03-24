@@ -1,8 +1,7 @@
 <?php
-
 #
 # XiVO Web-Interface
-# Copyright (C) 2006-2014  Avencall
+# Copyright (C) 2006-2015  Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,24 +17,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-$appmonitor 	= &$_XOBJ->get_application('monitoring');
-
-$fm_save        = null;
-$info 		    = $appmonitor->get_monitoring();
+$fm_save = null;
+$infos = $_XIVO_INFOS;
 
 if(isset($_QR['fm_send']) === true)
 {
-	$fm_save     = true;
-
-    $maintenance = array('maintenance' => array_key_exists('maintenance', $_QR));
-	if($appmonitor->set_monitoring($maintenance) === false)
-		$fm_save = false;
-
-    $info['maintenance'] = $maintenance;
+	if (($res = $_RAPI_INFOS->set_support_key($_XIVO_INFOS['uuid'], $_QR['support_key'])))
+	{
+		$info = $res;
+		$fm_save = true;
+	}
 }
 
-$_TPL->set_var('fm_save'	, $fm_save);
-$_TPL->set_var('info'   	, $info);
+$_TPL->set_var('fm_save', $fm_save);
+$_TPL->set_var('info', $infos);
 
 $menu = &$_TPL->get_module('menu');
 $menu->set_top('top/user/'.$_USR->get_info('meta'));
