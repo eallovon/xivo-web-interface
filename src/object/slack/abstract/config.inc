@@ -1,7 +1,7 @@
 <?php
 #
 # XiVO Web-Interface
-# Copyright (C) 2006-2015  Avencall
+# Copyright (C) 2013-2014  Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,24 +17,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+$array = array();
 
-$infos = $slack_infos;
-
-if(isset($_QR['fm_send']) === true)
-{
-	if ($_RAPI_SLACK_SUPPORT->set_support_key($_QR['support_key'])
-	&& $_RAPI_SLACK_SUPPORT->register())
-		$_QRY->go($_TPL->url('xivo/configuration/support/xivo'));
-}
-
-$_TPL->set_var('info', $infos);
-
-$menu = &$_TPL->get_module('menu');
-$menu->set_top('top/user/'.$_USR->get_info('meta'));
-$menu->set_left('left/xivo/configuration');
-
-$_TPL->set_bloc('main','xivo/configuration/support/xivo');
-$_TPL->set_struct('xivo/configuration');
-$_TPL->display('index');
+$array['slack'] = array();
+$array['slack']['host'] = '127.0.0.1';
+$array['slack']['port'] = 9501;
+$array['slack']['protocol'] = 'api';
+$array['slack']['connect_timeout'] = 180;
+$array['slack']['timeout'] = 90;
 
 ?>

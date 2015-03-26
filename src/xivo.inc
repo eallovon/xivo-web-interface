@@ -53,6 +53,7 @@ class xivo extends dwho
 		$this->_set_service();
 		$this->_set_stats();
 		$this->_set_confd();
+		$this->_set_slack();
 		$this->_set_manager();
 
 		if(dwho_constant('XIVO_WEBI_CONFIGURED',false) === true)
@@ -204,6 +205,12 @@ class xivo extends dwho
 	{
 		xivo::load_class('xivo_confd',XIVO_PATH_OBJECT,'confd',false);
 		dwho_gct::set(new xivo_confd());
+	}
+
+	function _set_slack()
+	{
+		xivo::load_class('xivo_slack',XIVO_PATH_OBJECT,'slack',false);
+		dwho_gct::set(new xivo_slack());
 	}
 
 	function _set_manager()

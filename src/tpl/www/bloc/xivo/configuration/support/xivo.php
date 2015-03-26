@@ -38,10 +38,15 @@ $element = $this->get_var('element');
 
 <?php
 	echo	$form->hidden(array('name' => DWHO_SESS_NAME, 'value' => DWHO_SESS_ID)),
-			$form->hidden(array('name' => 'fm_send', 'value' => 1)),
-			$form->text(array('desc' => $this->bbf('fm_xivo_uuid'), 'value' => $info['uuid'], 'size' => 50));
+			$form->hidden(array('name' => 'fm_send', 'value' => 1));
 ?>
 	<div class="fm-paragraph fm-description">
+		<p>
+			<label id="lb-description" for="it-description"><?=$this->bbf('fm_xivo_uuid');?></label>
+		</p>
+<?php
+	echo	$form->text(array('paragraph' => false, 'value' => $info['xivo_uuid'], 'size' => 50));
+?>
 		<p>
 			<label id="lb-description" for="it-description"><?=$this->bbf('fm_support_key');?></label>
 		</p>
@@ -64,7 +69,7 @@ $element = $this->get_var('element');
 	</thead>
 	<tbody>
 	<tr class="fm-paragraph">
-		<td class="td-single"><?=(!isset($info['support_expiration_date'])) ? '-' : $info['support_expiration_date']?></td>
+		<td class="td-single"><?=(!dwho_has_len($info['date_expiration'])) ? '-' : $info['date_expiration']?></td>
 	</tr>
 	</tbody>
 </table>

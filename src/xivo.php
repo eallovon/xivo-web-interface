@@ -43,13 +43,15 @@ $_LOC = dwho_gct::set_get(new dwho_location($_CF['location'],$_ACTION_MISC));
 $_XOBJ = dwho_gct::get('xivo_object');
 $_STS = &dwho_gct::get('xivo_stats');
 $_RAPI = &dwho_gct::get('xivo_confd');
+$_RAPI_SLACK = &dwho_gct::get('xivo_slack');
 $_MGR = &dwho_gct::get('xivo_manager');
 $_SRE = dwho_gct::get('xivo_service');
 $_USR = dwho_gct::get('_USR');
 
-$_RAPI_INFOS = &$_RAPI->get_ressource('info');
-$_XIVO_INFOS = $_RAPI_INFOS->simple_get();
-if ($_XIVO_INFOS['is_supported'])
+$_RAPI_SLACK_SUPPORT = &$_RAPI_SLACK->get_ressource('support');
+$slack_infos = $_RAPI_SLACK_SUPPORT->simple_get();
+
+if ($slack_infos['is_supported'])
 	define('XIVO_SUPPORT_STATE','Supported Version');
 else
 	define('XIVO_SUPPORT_STATE','Unsupported Version');
